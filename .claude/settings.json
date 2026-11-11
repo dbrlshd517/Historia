@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "py -3 Tools/hooks/git_start.py" } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "py -3 Tools/hooks/git_stop.py" } ] }
+    ]
+  }
+}
