@@ -17,8 +17,8 @@
 ## 작업 방식
 - **보고 첫 줄** `[<작업 폴더 이름> · <지금 TASK·단계>]`.
 - **브랜치·PR 안 만듦. main 에 바로.** 시작 = `git pull --rebase --autostash origin main`(훅이 저절로) · 단계 끝(빌드·시험 됨) = commit → `git pull --rebase origin main` → push. 새 worktree·복사 폴더를 스스로 만들지 않는다.
-- **작업 폴더 셋 (사람 11-12)**: 메인 `E:\Historia\Historia` + worktree `Historia_sub1`·`Historia_sub2`(분리된 HEAD — 시작 `git pull --rebase --autostash origin main`, 올릴 때 `git push origin HEAD:main`). Content(.uasset·.umap)는 이진이라 **한 번에 한 폴더에서만** 고친다 — 고치기 전에 사람에게 어느 폴더인지 확인. Binaries·Intermediate 는 폴더마다 따로(처음 빌드 김).
-- headless 를 고칠 때: 짝 폴더(메인 ↔ headless 메인 `Playheadless` · `_sub1` ↔ `Playheadless_sub1` · `_sub2` ↔ `Playheadless_sub2`)에서, **내가 고친 파일만** add → commit → `pull --rebase --autostash` → push. headless 의 시험(C3 고정 해시 등)이 그대로인지 확인.
+- **작업 폴더 넷 (사람 11-12)**: 메인 `E:\Historia\Historia` + worktree `Historia_sub1`·`Historia_sub2`·`Historia_sub3`(분리된 HEAD — 시작 `git pull --rebase --autostash origin main`, 올릴 때 `git push origin HEAD:main`). Content(.uasset·.umap)는 이진이라 **한 번에 한 폴더에서만** 고친다 — 고치기 전에 사람에게 어느 폴더인지 확인. Binaries·Intermediate 는 폴더마다 따로(처음 빌드 김).
+- headless 를 고칠 때: 짝 폴더(메인 ↔ headless 메인 `Playheadless` · `_sub1` ↔ `Playheadless_sub1` · `_sub2` ↔ `Playheadless_sub2` · `_sub3` ↔ `Playheadless_sub3`)에서, **내가 고친 파일만** add → commit → `pull --rebase --autostash` → push. headless 의 시험(C3 고정 해시 등)이 그대로인지 확인.
 - **시험·대본·스크린샷은 창 없이**(`-RenderOffscreen` · 숫자만은 `-nullrhi`). 찍은 것은 `Shots\<대본>\<때>\`(git 밖) — Claude 는 지우지 않음.
 - 빌드: `E:\Epic\UE_5.8\Engine\Build\BatchFiles\Build.bat HistoriaEditor Win64 Development -Project=<절대경로>\Historia.uproject -WaitMutex`. 에디터가 열려 있으면 닫아 달라고 말한다.
 - md 는 지금 하는 일만 — TASK 가 끝나면 STATUS 에 한 줄 남기고 TASK 파일은 지움.
