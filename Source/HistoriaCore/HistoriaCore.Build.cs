@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnrealBuildTool;
 
 // 거시 core 모듈 (TASK_거시연결 U0) — headless core(historia::Sim)를 감싼 손잡이 FHisMacroCore 만 내보낸다(HISTORIACORE_API).
 // headless 코드엔 DLL 내보내기 표시가 없어서, 게임 모듈은 core 를 직접 부르지 않고 이 손잡이로만 부른다.
 // 링크 길(Config/HisCore.json link_mode): prebuilt = ⓐ 미리 빌드한 정적 라이브러리 · source = ⓑ headless 소스를 이 모듈이 직접 컴파일
-//   (Private/Gen/*.cpp = headless .cpp 를 #include 하는 한 줄짜리 — 빌드 때 headless CMakeLists 의 목록에서 만든다, git 밖. 소스 복사 아님)
+//   (Private/Gen/*.cpp = headless .cpp 를 #include 하는 한 줄짜리 — Tools/his_core_gen.bat 가 headless CMakeLists 목록에서 만든다, git 밖. 소스 복사 아님)
 public class HistoriaCore : ModuleRules
 {
 	public HistoriaCore(ReadOnlyTargetRules Target) : base(Target)
@@ -22,7 +20,6 @@ public class HistoriaCore : ModuleRules
 
 		if (C.LinkMode == "prebuilt")
 		{
-			HisCore.WriteGen(GenDir, new List<string>());   // ⓑ 의 남은 것 지움
 			string LibDir = Path.Combine(C.ProjectDir, "ThirdParty", "historia_core", "lib", "Win64");
 			foreach (string Lib in new string[] { "historia_core", "historia_bakelib", "historia_tools", "historia_setting", "yyjson", "miniz" })
 			{
@@ -32,17 +29,18 @@ public class HistoriaCore : ModuleRules
 		}
 		else
 		{
-			// ⓑ headless 의 정적 라이브러리 넷(core·setting·tools·bake) 소스 목록 = headless CMakeLists 그대로 + FetchContent 바깥 것(miniz·yyjson·stb)
+			// ⓑ Gen(headless CMakeLists 목록 + miniz·yyjson)은 Tools/his_core_gen.bat 가 만든다 — uproject PreBuildSteps 가 UBT 소스 훑기 전에 부름.
+			// 여기서 만들면 UBT 가 이미 폴더를 읽은 뒤라 첫 빌드에 안 들어감. 여기서는 있는지만 본다.
+			// 단 UBT 는 이 규칙을 PreBuildSteps 보다 먼저 돌린다(BuildMode.cs: 규칙 → 미리 빌드 단계 → 소스 훑기) — 처음 빌드엔 Gen 이 아직 없는 게 맞다.
+			// 그래서 오류 = Gen 이 비었는데 uproject 에 만들 단계도 없을 때. 만들다 실패하면 미리 빌드 단계가 끝 코드 1 + 이유로 빌드를 멈춘다.
 			string Deps = Path.GetFullPath(Path.Combine(C.ProjectDir, C.DepsDir));
-			List<string> Files = new List<string>();
-			Files.AddRange(HisCore.CMakeSources(Path.Combine(C.HeadlessDir, "playheadless"), "historia_corelib"));
-			foreach (string L in new string[] { "historia_setting", "historia_tools", "historia_bakelib" })
+			bool GenEmpty = !Directory.Exists(GenDir) || Directory.GetFiles(GenDir, "his_*").Length == 0;
+			string Uproject = Target.ProjectFile != null ? File.ReadAllText(Target.ProjectFile.FullName) : "";
+			if (GenEmpty && !Uproject.Contains("his_core_gen.bat"))
 			{
-				Files.AddRange(HisCore.CMakeSources(Path.Combine(C.HeadlessDir, "Startsetting"), L));
+				throw new BuildException("HistoriaCore: Gen 폴더가 비었고 (" + GenDir + ") Historia.uproject PreBuildSteps 에 Tools\\his_core_gen.bat 도 없음 — " +
+					"Tools\\his_core_gen.bat 를 먼저 돌리거나 PreBuildSteps 를 되살리세요 (바깥 소스가 없다는 오류면 Tools\\his_core_build.bat 부터).");
 			}
-			foreach (string F in new string[] { "miniz.c", "miniz_tdef.c", "miniz_tinfl.c", "miniz_zip.c" }) Files.Add(Path.Combine(Deps, "miniz-src", F));
-			Files.Add(Path.Combine(Deps, "yyjson-src", "src", "yyjson.c"));
-			HisCore.WriteGen(GenDir, Files);
 			PrivateIncludePaths.Add(Path.Combine(Deps, "miniz-src"));
 			PrivateIncludePaths.Add(Path.Combine(Deps, "miniz-build"));   // miniz_export.h (CMake 가 만듦)
 			PrivateIncludePaths.Add(Path.Combine(Deps, "yyjson-src", "src"));
@@ -98,41 +96,5 @@ public class HisCore
 			throw new BuildException("Config/HisCore.json headless_dir 가 historia-headless 가 아님: " + C.HeadlessDir);
 		}
 		return C;
-	}
-
-	// CMakeLists.txt 의 add_library(Name STATIC 파일 …) 목록 → 절대 경로
-	public static List<string> CMakeSources(string Dir, string Lib)
-	{
-		string Text = File.ReadAllText(Path.Combine(Dir, "CMakeLists.txt"));
-		Match M = Regex.Match(Text, "add_library\\(\\s*" + Regex.Escape(Lib) + "\\s+STATIC([^)]*)\\)");
-		if (!M.Success) throw new BuildException(Dir + "/CMakeLists.txt 에 add_library(" + Lib + " STATIC …) 없음");
-		List<string> R = new List<string>();
-		foreach (string Line in M.Groups[1].Value.Split('\n'))
-		{
-			string T = Line.Split('#')[0].Trim();
-			if (T.EndsWith(".cpp") || T.EndsWith(".c")) R.Add(Path.GetFullPath(Path.Combine(Dir, T)));
-		}
-		return R;
-	}
-
-	// Gen 폴더 = 파일마다 한 줄 #include (같은 내용이면 다시 안 씀 — 빌드 시간)
-	public static void WriteGen(string GenDir, List<string> Files)
-	{
-		HashSet<string> Keep = new HashSet<string>();
-		if (Files.Count > 0) Directory.CreateDirectory(GenDir);
-		for (int i = 0; i < Files.Count; ++i)
-		{
-			string F = Files[i];
-			string D1 = Path.GetDirectoryName(F); string Rel = Path.GetFileName(Path.GetDirectoryName(D1)) + "_" + Path.GetFileName(D1) + "_" + Path.GetFileNameWithoutExtension(F);
-			string Ext = F.EndsWith(".c") ? ".c" : ".cpp";
-			string Out = Path.Combine(GenDir, "his_" + Rel + Ext);
-			string Body = "// 만든 것 (HistoriaCore.Build.cs) — 고치지 말 것. headless 원본을 그대로 컴파일\n#include \"" + F.Replace('\\', '/') + "\"\n";
-			Keep.Add(Out);
-			if (!File.Exists(Out) || File.ReadAllText(Out) != Body) File.WriteAllText(Out, Body, new UTF8Encoding(false));
-		}
-		if (Directory.Exists(GenDir))
-		{
-			foreach (string Old in Directory.GetFiles(GenDir)) if (!Keep.Contains(Old)) File.Delete(Old);
-		}
 	}
 }

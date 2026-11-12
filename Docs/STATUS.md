@@ -10,11 +10,12 @@
 - **고정 커밋 `ac1b1eb8cf1c6b24ce411907b276d46d089f6572`** (2026-11-12 headless origin/main — 판단 705 값 pen_crew_kill_chance).
 - **기준 해시** (`check_hash`) = `80d4d1f375e1d1a6bb347f17855938b99e4b62edd8c7f2d61b34a765bb04aa83` — headless `ac1b1eb` · 시드 4471 · 10 년(3650 일) · historia_run(MSVC Release) = 언리얼 His.CoreHash(-nullrhi, ⓑ) **같음**. gamedata = 그 커밋 엑셀에서 `historia_import --all --no-log --no-view`.
   - 옛 값 `f5e95bdb…`(U0·U1, headless 메인 폴더 3801268 + 안 올린 변경) = **임시 — 버림**(다시 만들 수 없는 소스).
-- 빌드 시간 (같은 PC, 다른 세션 빌드와 같이 돎): `Tools\his_core_build.bat` 처음 370 s(CMake 설정 + historia_run·historia_import + gamedata 변환) · 언리얼 ⓑ 처음 118 s(Gen 때문에 실패) + 46 s · `Tools\his_build.bat`(바뀐 것 없을 때 빌드 + 해시 시험) 114 s · 해시 시험만 ≈ 90 s · core 한 파일 고친 뒤 언리얼 8 s(U0).
+- 빌드 시간 (같은 PC, 다른 세션 빌드와 같이 돎): `Tools\his_core_build.bat` 처음 370 s(CMake 설정 + historia_run·historia_import + gamedata 변환) · 언리얼 ⓑ 처음부터(Intermediate·Binaries·Gen 지움, Intermediate\HisCore 는 둠) 341 s 한 번에 통과 · 바뀐 것 없을 때 UBT 2 s(0 동작) · headless 파일 하나 touch 뒤 9 s(그 파일만 컴파일) · `Tools\his_build.bat`(바뀐 것 없을 때 빌드 + 해시 시험) 114 s · 해시 시험만 ≈ 90 s · core 한 파일 고친 뒤 언리얼 8 s(U0).
 
 **쓰는 법**
 - 처음(또는 고정 커밋을 바꾼 뒤): `Tools\his_core_build.bat` — 고정 worktree 를 CMake 로 빌드(historia_run = 해시 기준, FetchContent 바깥 소스 miniz·yyjson·stb = ⓑ 가 컴파일), gamedata 없으면 만듦. 빌드 폴더 `Intermediate\HisCore\build`.
-- 빌드 + 해시 시험 한 줄: `Tools\his_build.bat` (에디터 닫고) — 언리얼 빌드(첫 빌드가 Gen 폴더 때문에 실패하면 한 번 더) → `Tools\his_core_hash.bat`. 해시 시험만: `Tools\his_core_hash.bat` (끝 코드 0 = 같음 · 로그 `Saved\Logs\his_corehash.log`).
+- 빌드 + 해시 시험 한 줄: `Tools\his_build.bat` (에디터 닫고) — 언리얼 빌드 → `Tools\his_core_hash.bat`.
+- Gen(`Source/HistoriaCore/Private/Gen`, git 밖) = `Tools\his_core_gen.bat`(→ `his_core_gen.ps1`)가 headless CMakeLists 목록에서 만듦 — `Historia.uproject` PreBuildSteps(Win64)가 UBT 소스 훑기 전에 부름(UBT 는 그 뒤 폴더 기억을 지움 → 첫 빌드부터 들어감). 내용이 같으면 안 씀 · 실패 = 끝 코드 1. UBT 는 모듈 규칙(Build.cs)을 미리 빌드 단계보다 **먼저** 돌리므로 Build.cs 는 'Gen 이 비었고 PreBuildSteps 도 없음'일 때만 오류. 빌드 로그에 같은 his_core_gen 줄이 두 번 보이면 두 번째는 makefile 에 저장된 옛 로그를 다시 찍은 것(실제로 돈 것 아님). 해시 시험만: `Tools\his_core_hash.bat` (끝 코드 0 = 같음 · 로그 `Saved\Logs\his_corehash.log`).
 
 **고정 커밋 올리는 법**
 1. `git -C E:\Historia\headless-pinned fetch origin` → `git -C E:\Historia\headless-pinned checkout --detach <새 커밋>`

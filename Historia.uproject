@@ -28,5 +28,10 @@
 			"Name": "ProceduralMeshComponent",
 			"Enabled": true
 		}
-	]
+	],
+	"PreBuildSteps": {
+		"Win64": [
+			"call \"$(ProjectDir)\\Tools\\his_core_gen.bat\""
+		]
+	}
 }
