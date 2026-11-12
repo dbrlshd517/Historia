@@ -1,0 +1,13 @@
+{
+  "_doc": "거시 core(historia-headless) 자리 · 링크 길 (TASK_거시연결 U0·U1). {sub} = 이 프로젝트 폴더 이름에서 'Historia' 뒤 꼬리(_sub1 …) — 짝 폴더(Historia ↔ Playheadless · _sub1 ↔ Playheadless_sub1). 상대 경로는 프로젝트 폴더 기준. 환경 변수 HISTORIA_HEADLESS 가 있으면 그것이 우선.",
+  "headless_dir": "../Playheadless{sub}",
+  "link_mode": "prebuilt",
+  "_link_mode_doc": "prebuilt = ⓐ CMake 로 미리 빌드한 정적 라이브러리(ThirdParty/historia_core/lib/Win64 — Tools/his_core_lib.bat) · source = ⓑ UBT 가 headless 소스를 직접 컴파일(모듈 HistoriaCore)",
+  "deps_dir": "Intermediate/HisCore/build/_deps",
+  "_deps_dir_doc": "ⓑ 만 — headless 가 FetchContent 로 받는 바깥 소스(miniz·yyjson·stb). his_core_lib.bat 의 CMake 설정이 받아 둠",
+  "map_dir": "Startsetting/out/{seed}",
+  "gamedata": "Startsetting/out/gamedata_core.json",
+  "check_seed": 4471,
+  "check_years": 10,
+  "historia_run": "Intermediate/HisCore/build/playheadless/Release/historia_run.exe"
+}
