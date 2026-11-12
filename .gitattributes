@@ -47,5 +47,8 @@ Terrains/**/terrain.json -text
 *.mp4    filter=lfs diff=lfs merge=lfs -text
 SourceArt/**/*.jpeg filter=lfs diff=lfs merge=lfs -text
 
+# 거시 core 바깥 소스 고정 — 바이트 그대로 (VERSIONS.json 의 sha256 이 어느 clone 에서도 맞게, 줄끝 바꾸지 않음)
+ThirdParty/HisDeps/** -text
+
 # git 훅 (sh) — 줄 끝 LF 고정
 Tools/hooks/git/* text eol=lf

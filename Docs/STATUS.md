@@ -4,6 +4,7 @@
 - 2026-11-12 **TASK_거시연결 U2 앞 정리 끝 (사람 11-12 지시)**: 링크 길 = **ⓑ**(UBT 가 headless 소스를 모듈 `HistoriaCore` 안에서 직접 컴파일) · headless 를 **고정 커밋 worktree** 로 봄. U2 본 작업(Runner·스냅샷)은 headless 연속이동 N3·땅객체 L3 끝난 뒤.
   - 모듈 `HistoriaCore` = core 손잡이 `FHisMacroCore`(HISTORIACORE_API) 하나만 내보냄 — headless 코드엔 DLL 내보내기 표시가 없어 게임 모듈이 core 를 직접 부를 수 없음.
   - U1: `UHisMacroSubsystem`(불러오기·날 진행) · 시험 `His.CoreHash`(시드 4471 · 10 년) = 같은 고정 커밋의 historia_run 해시 + HisCore.json 기준 해시 둘 다와 견줌.
+  - 2026-11-12 바깥 소스(miniz·yyjson·stb)를 `ThirdParty\HisDeps` 에 고정 · ⓐ 없앰 (사람 지시) — 새로 clone 해도 언리얼 빌드에 CMake·네트워크 필요 없음(실행 자료·해시 기준은 여전히 `his_core_build.bat`).
 
 ## 거시 core 고정 (Config/HisCore.json)
 - headless 자리 = `E:\Historia\headless-pinned` (`../headless-pinned` — headless 저장소의 worktree, 분리된 HEAD, 사람 11-12 지시로 만듦). headless 메인 폴더(다른 세션 작업 중)는 보지 않음. `Historia_sub*` 도 같은 worktree 를 봄.
@@ -13,13 +14,18 @@
 - 빌드 시간 (같은 PC, 다른 세션 빌드와 같이 돎): `Tools\his_core_build.bat` 처음 370 s(CMake 설정 + historia_run·historia_import + gamedata 변환) · 언리얼 ⓑ 처음부터(Intermediate·Binaries·Gen 지움, Intermediate\HisCore 는 둠) 341 s 한 번에 통과 · 바뀐 것 없을 때 UBT 2 s(0 동작) · headless 파일 하나 touch 뒤 9 s(그 파일만 컴파일) · `Tools\his_build.bat`(바뀐 것 없을 때 빌드 + 해시 시험) 114 s · 해시 시험만 ≈ 90 s · core 한 파일 고친 뒤 언리얼 8 s(U0).
 
 **쓰는 법**
-- 처음(또는 고정 커밋을 바꾼 뒤): `Tools\his_core_build.bat` — 고정 worktree 를 CMake 로 빌드(historia_run = 해시 기준, FetchContent 바깥 소스 miniz·yyjson·stb = ⓑ 가 컴파일), gamedata 없으면 만듦. 빌드 폴더 `Intermediate\HisCore\build`.
+- 처음(또는 고정 커밋을 바꾼 뒤): `Tools\his_core_build.bat` — 고정 worktree 를 CMake 로 빌드(historia_run = 해시 기준 · historia_import), gamedata 없으면 만듦. 빌드 폴더 `Intermediate\HisCore\build` — 언리얼 빌드는 이 폴더가 없어도 됨(지워도 됨, 해시 시험·gamedata 만들기에만 씀).
+- 바깥 소스 (miniz·yyjson·stb) = **`ThirdParty\HisDeps`** (git 추적, 2026-11-12 사람 지시). headless FetchContent 가 받은 소스를 내용 그대로 복사 · `VERSIONS.json` 에 출처·GIT_TAG·커밋·파일 sha256 · `miniz_export.h` 는 CMake 가 만든 파일(MINIZ_STATIC_DEFINE 전제) · `.gitattributes` `-text`(바이트 그대로). `his_core_gen` 이 빌드마다 확인 — headless CMakeLists GIT_TAG ≠ VERSIONS · sha256 다름 · 고정 안 된 새 FetchContent 라이브러리 → 이유 찍고 끝 코드 1(빌드 멈춤).
 - 빌드 + 해시 시험 한 줄: `Tools\his_build.bat` (에디터 닫고) — 언리얼 빌드 → `Tools\his_core_hash.bat`.
 - Gen(`Source/HistoriaCore/Private/Gen`, git 밖) = `Tools\his_core_gen.bat`(→ `his_core_gen.ps1`)가 headless CMakeLists 목록에서 만듦 — `Historia.uproject` PreBuildSteps(Win64)가 UBT 소스 훑기 전에 부름(UBT 는 그 뒤 폴더 기억을 지움 → 첫 빌드부터 들어감). 내용이 같으면 안 씀 · 실패 = 끝 코드 1. UBT 는 모듈 규칙(Build.cs)을 미리 빌드 단계보다 **먼저** 돌리므로 Build.cs 는 'Gen 이 비었고 PreBuildSteps 도 없음'일 때만 오류. 빌드 로그에 같은 his_core_gen 줄이 두 번 보이면 두 번째는 makefile 에 저장된 옛 로그를 다시 찍은 것(실제로 돈 것 아님). 해시 시험만: `Tools\his_core_hash.bat` (끝 코드 0 = 같음 · 로그 `Saved\Logs\his_corehash.log`).
 
 **고정 커밋 올리는 법**
 1. `git -C E:\Historia\headless-pinned fetch origin` → `git -C E:\Historia\headless-pinned checkout --detach <새 커밋>`
 2. `del E:\Historia\headless-pinned\Startsetting\out\gamedata_core.json` (엑셀이 바뀌었을 수 있음) → `Tools\his_core_build.bat`
+   - **바깥 라이브러리 버전이 바뀌었으면** (`Tools\his_core_gen.bat` 가 `version mismatch` 로 멈춤 · headless `Startsetting/CMakeLists.txt` 의 GIT_TAG 가 바뀜): his_core_build 가 새 버전을 `Intermediate\HisCore\build\_deps` 에 받은 뒤
+     ① 같은 파일을 `ThirdParty\HisDeps\<lib>\` 로 덮어 복사 — miniz = `miniz-src\miniz*.c/.h`(9개) + `LICENSE` + `miniz-build\miniz_export.h` · yyjson = `yyjson-src\src\yyjson.c/.h` + `yyjson-src\LICENSE` · stb = `stb-src\stb_truetype.h` + `LICENSE` (파일 목록이 바뀌었으면 VERSIONS 의 `files` 도)
+     ② `VERSIONS.json` 의 `git_tag`(CMakeLists 값) · `commit`(`git -C Intermediate\HisCore\build\_deps\<lib>-src rev-parse HEAD`) · 파일마다 sha256(`Get-FileHash -Algorithm SHA256`, 소문자)
+     ③ `Tools\his_core_gen.bat` → `pins ok` 확인. 새 라이브러리(고정 안 된 FetchContent 라 멈춤)면 `ThirdParty\HisDeps\<새것>` + VERSIONS + `HistoriaCore.Build.cs` include 경로 + `his_core_gen.ps1` 의 .c 목록까지.
 3. `Intermediate\HisCore\build\playheadless\Release\historia_run.exe --root E:\Historia\headless-pinned --seed 4471 --years 10 --no-save --out Intermediate\HisCore\base10` → 해시
 4. `Config/HisCore.json` 의 `headless_commit`·`check_hash` 를 새 값으로 → `Tools\his_build.bat` → 같음이면 커밋(STATUS 의 위 두 줄도).
 - 새 바깥 라이브러리(예: 연속이동의 Recast)나 파일별 컴파일 옵션이 headless 에 생기면 `Source/HistoriaCore/HistoriaCore.Build.cs` 를 고쳐야 함.
@@ -39,6 +45,8 @@
 | 패키징 | lib 파일만 있으면 됨(headless 폴더 없어도) — 대신 lib 이 어느 커밋인지 `headless_commit.txt` 로만 앎 | 패키징 PC 에 headless 폴더 + FetchContent 바깥 소스(miniz·yyjson·stb — 지금은 ⓐ 의 CMake 설정이 받아 둔 `Intermediate/HisCore/build/_deps`) 필요 |
 | headless 를 고친 뒤 따라오는 수고 | 스크립트 한 번 + 언리얼 빌드. 잊으면 **옛 core 로 조용히 돎**(해시 시험이 historia_run 도 같은 옛 빌드라 못 잡음) | 언리얼 빌드만. 새 .cpp 는 CMakeLists 목록을 읽어 저절로 들어감. 새 바깥 라이브러리(예: 연속이동의 Recast)·파일별 컴파일 옵션이 생기면 `HistoriaCore.Build.cs` 를 고쳐야 함 |
 | 깨지는 곳 | headless 가 CMake 로 빌드되면 거의 안 깨짐 | 언리얼 매크로·경고·묶음 빌드와 부딪히는 새 코드가 생기면 언리얼 쪽에서만 깨짐(=일찍 알게 됨) |
+
+- ⓐ 는 72258da 에서 없앰 (`ThirdParty/historia_core/lib` · Build.cs prebuilt 분기 · link_mode 는 "source" 만).
 
 덧붙여 본 것:
 - 두 길 모두 **headless 메인 폴더가 다른 세션 작업 중**이면 그 순간의 소스·`out/`(gamedata_core.json 을 지우고 다시 씀)을 읽는다 — 시험 한 번이 그 사이에 걸려 '파일 못 엶'으로 실패했다(다시 돌리니 통과).

@@ -1,0 +1,48 @@
+{
+  "_doc": "거시 core ⓑ 가 컴파일하는 바깥 소스 고정 (사람 11-12). headless CMakeLists 의 FetchContent 가 받은 소스(Intermediate/HisCore/build/_deps)를 내용 그대로 복사. Tools/his_core_gen.ps1 이 빌드마다 (1) headless CMakeLists 의 GIT_TAG = git_tag (2) 파일 sha256 = files 를 확인 — 다르면 끝 코드 1. 줄끝 = 받은 그대로(이 PC git core.autocrlf=true 라 CRLF) · .gitattributes 에서 -text 라 git 이 바이트를 바꾸지 않음. 버전 올리기 = Docs/STATUS.md '고정 커밋 올리는 법'.",
+  "libs": {
+    "miniz": {
+      "url": "https://github.com/richgel999/miniz.git",
+      "cmake": "Startsetting/CMakeLists.txt",
+      "git_tag": "3.0.2",
+      "commit": "293d4db1b7d0ffee9756d035b9ac6f7431ef8492",
+      "files": {
+        "LICENSE": "0115478d567121238cf6cc1c0c361926cf07a49d9e4c9e66da97fac6a01646b3",
+        "miniz.c": "8fa711e21efbf26f76e399c447a1c50de6cc279a9d53d8490679091060a351d9",
+        "miniz.h": "45f2ce7b6a06aee90a2afa6bf1852675690dac4d48a0d9dfdc938793f09e8c2e",
+        "miniz_common.h": "d338491fd2e8818ff8ebbc1a32cf8abad36f873708734ed95aebb4420e889974",
+        "miniz_tdef.c": "d5e44e8e5a9d5258228d3c08111d8cf479cf9f518ad9c55b7b50089e7d89e60a",
+        "miniz_tdef.h": "ee397463e4a8f060f585152a66e14f994db49c7eea709e871667f36a5c9104fb",
+        "miniz_tinfl.c": "0703d6f4cd1ff26ee443a4e57702a637e01b6a7e5d35820c4d537dce450adb97",
+        "miniz_tinfl.h": "c006b08d40dc535de4fc7f877a3b82f317fce13aa67513c30ff9605ee4f79796",
+        "miniz_zip.c": "6ab22e073427076c16e2042e94f2cccdb946862893f2754e3f6791f572516b8f",
+        "miniz_zip.h": "18bf95be46928e0ec443ad5256b6a3c0e7e09102bd094c6a8dbcb33c5100f59d",
+        "miniz_export.h": "d6d27ca9932ddcfe6db1df7a1c283cc33a745435a5b0ac1c137099f67bac0821"
+      },
+      "generated": {
+        "miniz_export.h": "CMake 가 만든 파일(generate_export_header, _deps/miniz-build) — 저장소에 없음. MINIZ_STATIC_DEFINE 전제(HistoriaCore.Build.cs 가 정의)"
+      }
+    },
+    "yyjson": {
+      "url": "https://github.com/ibireme/yyjson.git",
+      "cmake": "Startsetting/CMakeLists.txt",
+      "git_tag": "0.10.0",
+      "commit": "9ddba001a4ea88e93b46932e5c5b87b222e19a5f",
+      "files": {
+        "LICENSE": "7b14b8632bf3d5cb64c7a5f1ddfa9062e9c6eba38ac495a0897541d6658d3ad2",
+        "yyjson.c": "e6d313463dee14acf209fc24ebd28821403d490bc0341a230d4aad24b76e3b2e",
+        "yyjson.h": "09c6a4a2d08db7fc615220859b92df68401b5ecaf9f1af9c81870e543bcade6d"
+      }
+    },
+    "stb": {
+      "url": "https://github.com/nothings/stb.git",
+      "cmake": "Startsetting/CMakeLists.txt",
+      "git_tag": "a7d4c2175630e1ea5b6f8dd00ab96fed0b97b96d",
+      "commit": "a7d4c2175630e1ea5b6f8dd00ab96fed0b97b96d",
+      "files": {
+        "LICENSE": "11dd149dbc50748419a22fcec275b5bcfb4c2d86d9fba8802e5c4ffd40c94609",
+        "stb_truetype.h": "2d119d54c88197764a6494c3c79fb6cdb4bd3e8d6708c82b57cbb508b8a70090"
+      }
+    }
+  }
+}

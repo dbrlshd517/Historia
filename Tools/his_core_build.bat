@@ -2,7 +2,7 @@
 chcp 65001 >nul
 rem 거시 core 준비 (TASK_거시연결 U2 — 링크 길 ⓑ, 사람 11-12): Config\HisCore.json headless_dir(고정 worktree)를 CMake(MSVC Release)로 빌드해
 rem   - historia_run.exe = 해시 기준 (His.CoreHash 가 돌려 견줌)
-rem   - FetchContent 바깥 소스(miniz·yyjson·stb) = ⓑ 가 컴파일 (deps_dir)
+rem   - (CMake 가 받는 FetchContent 바깥 소스는 historia_run 빌드에만 씀 — 언리얼 ⓑ 는 ThirdParty\HisDeps 를 컴파일)
 rem   - gamedata_core.json 이 없으면 historia_import 로 만듦(--no-log --no-view — headless 의 추적 파일은 안 건드림)
 rem 빌드 폴더 = Intermediate\HisCore\build (headless 폴더엔 out\gamedata_*.json 말고 아무것도 안 씀). headless 커밋은 HisCore.json headless_commit 과 견줌.
 rem 쓰임: Tools\his_core_build.bat

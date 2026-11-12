@@ -16,9 +16,6 @@ Plugins/*/Intermediate/
 *.VC.db
 # 스크린샷 — PC 에만
 Shots/
-# 거시 core 미리 빌드한 lib (U0 에서 ⓐ 를 고르면 — 스크립트가 만듦)
-ThirdParty/historia_core/lib/
-
 # 거시 core ⓑ 빌드 때 만드는 한 줄 #include 파일 (HistoriaCore.Build.cs)
 Source/HistoriaCore/Private/Gen/
 
