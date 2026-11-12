@@ -1,4 +1,4 @@
-// Config/HisCore.json — 거시 core 자리 (headless 짝 폴더) · 지도·데이터 경로 · 확인 시드 (TASK_거시연결 U1). 경로를 코드에 박지 않는다.
+﻿// Config/HisCore.json — 거시 core 자리 (headless 짝 폴더) · 지도·데이터 경로 · 확인 시드 (TASK_거시연결 U1). 경로를 코드에 박지 않는다.
 #pragma once
 
 #include "CoreMinimal.h"
@@ -11,6 +11,8 @@ struct FHisCoreConfig
 	FString HistoriaRunRel;  // 프로젝트 기준
 	int64 CheckSeed = 0;
 	double CheckYears = 0.0;
+	FString CheckHash;       // 기준 해시 (headless_commit 에서 historia_run) — 비면 안 견줌
+	FString HeadlessCommit;  // 고정 커밋
 
 	// 실패하면 false + Error
 	bool Load(FString& Error);

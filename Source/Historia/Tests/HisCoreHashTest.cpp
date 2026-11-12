@@ -91,6 +91,12 @@ bool FHisCoreHashTest::RunTest(const FString& Parameters)
 	AddInfo(FString::Printf(TEXT("historia_run: %.1f s (불러오기 포함) · 해시 %s"), RunS, *Theirs));
 	TestEqual(TEXT("core 날"), Core.Day() - Day0, Days);
 	TestEqual(TEXT("해시 = historia_run"), Mine, Theirs);
+	if (!Cfg.CheckHash.IsEmpty())
+	{
+		// 기준 해시는 고정 커밋(headless_commit)에서 뽑은 값 — 다르면 고정 커밋이 바뀌었거나 gamedata 가 다름
+		AddInfo(FString::Printf(TEXT("기준 해시 (headless %s): %s"), *Cfg.HeadlessCommit.Left(7), *Cfg.CheckHash));
+		TestEqual(TEXT("해시 = 기준 해시 (HisCore.json check_hash)"), Mine, Cfg.CheckHash);
+	}
 	return true;
 }
 

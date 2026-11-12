@@ -19,5 +19,5 @@ Shots/
 # ê±°ì‹œ core ë¯¸ë¦¬ ë¹Œë“œí•œ lib (U0 ì—ì„œ â“ ë¥¼ ê³ ë¥´ë©´ â€” ìŠ¤í¬ë¦½íŠ¸ê°€ ë§Œë“¦)
 ThirdParty/historia_core/lib/
 
-# °Å½Ã core ¨Î ºôµå ¶§ ¸¸µå´Â ÇÑ ÁÙ #include ÆÄÀÏ (HistoriaCore.Build.cs)
+# ê±°ì‹œ core â“‘ ë¹Œë“œ ë•Œ ë§Œë“œëŠ” í•œ ì¤„ #include íŒŒì¼ (HistoriaCore.Build.cs)
 Source/HistoriaCore/Private/Gen/

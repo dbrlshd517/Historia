@@ -1,4 +1,4 @@
-#include "Macro/HisCoreConfig.h"
+﻿#include "Macro/HisCoreConfig.h"
 
 #include "Dom/JsonObject.h"
 #include "HAL/PlatformMisc.h"
@@ -47,6 +47,8 @@ bool FHisCoreConfig::Load(FString& Error)
 	HistoriaRunRel = J->GetStringField(TEXT("historia_run"));
 	CheckSeed = static_cast<int64>(J->GetNumberField(TEXT("check_seed")));
 	CheckYears = J->GetNumberField(TEXT("check_years"));
+	J->TryGetStringField(TEXT("check_hash"), CheckHash);
+	J->TryGetStringField(TEXT("headless_commit"), HeadlessCommit);
 	if (!FPaths::FileExists(HeadlessDir / TEXT("playheadless/core.hpp")))
 	{
 		Error = FString::Printf(TEXT("headless_dir 가 historia-headless 가 아님: %s"), *HeadlessDir);

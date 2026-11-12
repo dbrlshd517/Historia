@@ -1,13 +1,16 @@
 {
-  "_doc": "거시 core(historia-headless) 자리 · 링크 길 (TASK_거시연결 U0·U1). {sub} = 이 프로젝트 폴더 이름에서 'Historia' 뒤 꼬리(_sub1 …) — 짝 폴더(Historia ↔ Playheadless · _sub1 ↔ Playheadless_sub1). 상대 경로는 프로젝트 폴더 기준. 환경 변수 HISTORIA_HEADLESS 가 있으면 그것이 우선.",
-  "headless_dir": "../Playheadless{sub}",
-  "link_mode": "prebuilt",
-  "_link_mode_doc": "prebuilt = ⓐ CMake 로 미리 빌드한 정적 라이브러리(ThirdParty/historia_core/lib/Win64 — Tools/his_core_lib.bat) · source = ⓑ UBT 가 headless 소스를 직접 컴파일(모듈 HistoriaCore)",
+  "_doc": "거시 core(historia-headless) 자리 · 링크 길 (TASK_거시연결). 링크 길 = ⓑ source (사람 11-12). headless 메인 폴더는 다른 세션이 작업 중이라 보지 않고, 고정 커밋의 worktree 를 본다. 상대 경로는 프로젝트 폴더 기준. 환경 변수 HISTORIA_HEADLESS 가 있으면 그것이 우선. 고정 커밋 올리는 법 = Docs/STATUS.md.",
+  "headless_dir": "../headless-pinned",
+  "headless_commit": "ac1b1eb8cf1c6b24ce411907b276d46d089f6572",
+  "link_mode": "source",
+  "_link_mode_doc": "source = ⓑ UBT 가 headless 소스를 직접 컴파일(모듈 HistoriaCore — Private/Gen 한 줄 #include) · prebuilt = ⓐ 미리 빌드한 정적 라이브러리(ThirdParty/historia_core/lib/Win64 — 지금은 만드는 스크립트 없음, U0 견줌 기록은 STATUS)",
   "deps_dir": "Intermediate/HisCore/build/_deps",
-  "_deps_dir_doc": "ⓑ 만 — headless 가 FetchContent 로 받는 바깥 소스(miniz·yyjson·stb). his_core_lib.bat 의 CMake 설정이 받아 둠",
+  "_deps_dir_doc": "ⓑ — headless 가 FetchContent 로 받는 바깥 소스(miniz·yyjson·stb). Tools/his_core_build.bat 의 CMake 설정이 받아 둠",
   "map_dir": "Startsetting/out/{seed}",
   "gamedata": "Startsetting/out/gamedata_core.json",
   "check_seed": 4471,
   "check_years": 10,
+  "check_hash": "80d4d1f375e1d1a6bb347f17855938b99e4b62edd8c7f2d61b34a765bb04aa83",
+  "_check_hash_doc": "기준 해시 = historia_run --seed 4471 --years 10 @ headless_commit (2026-11-12). His.CoreHash 가 historia_run 과 이것 둘 다와 견줌 — 고정 커밋을 올리면 같이 새로 씀",
   "historia_run": "Intermediate/HisCore/build/playheadless/Release/historia_run.exe"
 }

@@ -1,15 +1,34 @@
 # STATUS — Historia
 
 ## 지금
-- 2026-11-12 **TASK_거시연결 U0·U1 끝** (사람 11-12: U0·U1 만 — U2 부터는 headless 연속이동 N3·땅객체 L3 끝난 뒤).
-  - 모듈 `HistoriaCore` = core 손잡이 `FHisMacroCore`(HISTORIACORE_API) 하나만 내보냄 — headless 코드엔 DLL 내보내기 표시가 없어 게임 모듈이 core 를 직접 부를 수 없음. 링크 길은 `Config/HisCore.json` `link_mode`(prebuilt ⓐ / source ⓑ), headless 자리 = 짝 폴더(`../Playheadless{sub}`, 환경 변수 `HISTORIA_HEADLESS` 우선).
-  - U1: `UHisMacroSubsystem`(불러오기·날 진행) · 시험 `His.CoreHash`(시드 4471 · 10 년, 같은 빌드의 historia_run 을 돌려 해시 견줌) — **ⓐ·ⓑ 둘 다 해시 같음** `f5e95bdb6e84918a…` (headless 3801268, 그 폴더의 안 올린 변경 포함).
-  - 지금 설정 = ⓐ(prebuilt). 처음 한 번 `Tools\his_core_lib.bat` → 언리얼 빌드.
-  - 창 없이: `UnrealEditor-Cmd Historia.uproject -nullrhi -unattended -ExecCmds="Automation RunTests His.CoreHash;Quit"`
+- 2026-11-12 **TASK_거시연결 U2 앞 정리 끝 (사람 11-12 지시)**: 링크 길 = **ⓑ**(UBT 가 headless 소스를 모듈 `HistoriaCore` 안에서 직접 컴파일) · headless 를 **고정 커밋 worktree** 로 봄. U2 본 작업(Runner·스냅샷)은 headless 연속이동 N3·땅객체 L3 끝난 뒤.
+  - 모듈 `HistoriaCore` = core 손잡이 `FHisMacroCore`(HISTORIACORE_API) 하나만 내보냄 — headless 코드엔 DLL 내보내기 표시가 없어 게임 모듈이 core 를 직접 부를 수 없음.
+  - U1: `UHisMacroSubsystem`(불러오기·날 진행) · 시험 `His.CoreHash`(시드 4471 · 10 년) = 같은 고정 커밋의 historia_run 해시 + HisCore.json 기준 해시 둘 다와 견줌.
 
-## U0 링크 길 견줌 (2026-11-12, 같은 PC — 다른 세션 빌드가 같이 돌아 시간은 ±30%)
+## 거시 core 고정 (Config/HisCore.json)
+- headless 자리 = `E:\Historia\headless-pinned` (`../headless-pinned` — headless 저장소의 worktree, 분리된 HEAD, 사람 11-12 지시로 만듦). headless 메인 폴더(다른 세션 작업 중)는 보지 않음. `Historia_sub*` 도 같은 worktree 를 봄.
+- **고정 커밋 `ac1b1eb8cf1c6b24ce411907b276d46d089f6572`** (2026-11-12 headless origin/main — 판단 705 값 pen_crew_kill_chance).
+- **기준 해시** (`check_hash`) = `80d4d1f375e1d1a6bb347f17855938b99e4b62edd8c7f2d61b34a765bb04aa83` — headless `ac1b1eb` · 시드 4471 · 10 년(3650 일) · historia_run(MSVC Release) = 언리얼 His.CoreHash(-nullrhi, ⓑ) **같음**. gamedata = 그 커밋 엑셀에서 `historia_import --all --no-log --no-view`.
+  - 옛 값 `f5e95bdb…`(U0·U1, headless 메인 폴더 3801268 + 안 올린 변경) = **임시 — 버림**(다시 만들 수 없는 소스).
+- 빌드 시간 (같은 PC, 다른 세션 빌드와 같이 돎): `Tools\his_core_build.bat` 처음 370 s(CMake 설정 + historia_run·historia_import + gamedata 변환) · 언리얼 ⓑ 처음 118 s(Gen 때문에 실패) + 46 s · `Tools\his_build.bat`(바뀐 것 없을 때 빌드 + 해시 시험) 114 s · 해시 시험만 ≈ 90 s · core 한 파일 고친 뒤 언리얼 8 s(U0).
 
-| | ⓐ 미리 빌드한 lib (`Tools/his_core_lib.bat`) | ⓑ UBT 가 headless 소스 직접 컴파일 (`HistoriaCore` 모듈) |
+**쓰는 법**
+- 처음(또는 고정 커밋을 바꾼 뒤): `Tools\his_core_build.bat` — 고정 worktree 를 CMake 로 빌드(historia_run = 해시 기준, FetchContent 바깥 소스 miniz·yyjson·stb = ⓑ 가 컴파일), gamedata 없으면 만듦. 빌드 폴더 `Intermediate\HisCore\build`.
+- 빌드 + 해시 시험 한 줄: `Tools\his_build.bat` (에디터 닫고) — 언리얼 빌드(첫 빌드가 Gen 폴더 때문에 실패하면 한 번 더) → `Tools\his_core_hash.bat`. 해시 시험만: `Tools\his_core_hash.bat` (끝 코드 0 = 같음 · 로그 `Saved\Logs\his_corehash.log`).
+
+**고정 커밋 올리는 법**
+1. `git -C E:\Historia\headless-pinned fetch origin` → `git -C E:\Historia\headless-pinned checkout --detach <새 커밋>`
+2. `del E:\Historia\headless-pinned\Startsetting\out\gamedata_core.json` (엑셀이 바뀌었을 수 있음) → `Tools\his_core_build.bat`
+3. `Intermediate\HisCore\build\playheadless\Release\historia_run.exe --root E:\Historia\headless-pinned --seed 4471 --years 10 --no-save --out Intermediate\HisCore\base10` → 해시
+4. `Config/HisCore.json` 의 `headless_commit`·`check_hash` 를 새 값으로 → `Tools\his_build.bat` → 같음이면 커밋(STATUS 의 위 두 줄도).
+- 새 바깥 라이브러리(예: 연속이동의 Recast)나 파일별 컴파일 옵션이 headless 에 생기면 `Source/HistoriaCore/HistoriaCore.Build.cs` 를 고쳐야 함.
+
+**ⓑ 설정이 HistoriaCore 안에서만인지 (확인 2026-11-12, UBT 응답 파일)**
+- 묶음 빌드 끔 · PCH 끔 · 경고 끔 · 예외 켬 = `HistoriaCore.Build.cs` 의 ModuleRules — 모듈 하나에만 걸림. 실제: `Historia` 는 공유 PCH(`SharedPCH.UnrealEd…`)를 씀 · `HistoriaCore` 는 PCH 없음 · RTTI 는 둘 다 `/GR-`.
+- 예외 `/EHsc` 는 에디터 빌드에선 **모든 모듈에** 켜짐 — 엔진 규칙(`UEBuildTarget.cs:6184` `bEnableExceptions = bForceEnableExceptions || bCompileAgainstEditor`)이지 HistoriaCore 때문이 아님. 게임(에디터 아닌) 빌드에서는 HistoriaCore 만 켜짐(`Result.bEnableExceptions |= Rules.bEnableExceptions`, 모듈별).
+## U0 링크 길 견줌 — 기록 (2026-11-12, ⓑ 로 정함 · 같은 PC — 다른 세션 빌드가 같이 돌아 시간은 ±30%)
+
+| | ⓐ 미리 빌드한 lib (그때 `Tools/his_core_lib.bat` — 지금은 `his_core_build.bat` 로 바뀌어 lib 복사 안 함) | ⓑ UBT 가 headless 소스 직접 컴파일 (`HistoriaCore` 모듈) |
 |---|---|---|
 | 처음 빌드 | CMake 설정 21 s + 빌드 297 s(VS 생성기는 파일 단위 병렬 아님) + 언리얼 56 s | 언리얼 57 s (UBA 병렬, 파일 96개) |
 | core 한 파일 고친 뒤 | 스크립트 73 s + 언리얼 5 s ≈ **78 s** (사람/세션이 스크립트를 먼저 돌려야 함) | **8 s** (언리얼 빌드만 — 저절로 따라옴) |
@@ -26,6 +45,5 @@
 - 언리얼 안 틱 = historia_run 과 같은 빠르기(10 년: 14.6 s vs 14.7 s — 같은 core 빌드).
 
 ## 판단 필요
-- **U0 링크 길**: 추천 **ⓑ** — 0-1 의 '계속 이어진 채로' 비용이 가장 작다(headless 를 고치면 언리얼 빌드 8 s 만으로 따라오고, 잊고 옛 lib 으로 도는 일이 없음 · 언리얼 컴파일 설정과 부딪히는 코드를 headless 세션이 일찍 알게 됨 · core 디버깅). 값: 예외를 모듈 전체에 켬 · 바깥 라이브러리가 늘면 Build.cs 한 줄씩 · 패키징 때 headless 소스가 있어야 함. ⓐ 는 패키징·마지막 합치기 때 다시 볼 만함. 고르면 `Config/HisCore.json` `link_mode` 만 바꿈(지금 ⓐ).
 - 거시 전투 창: PIP / 별도 창 (U4 때).
 - `his_check` 를 얼마나 자주 돌릴지 (U6 때).
