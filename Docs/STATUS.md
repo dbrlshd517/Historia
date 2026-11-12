@@ -46,7 +46,7 @@
 | headless 를 고친 뒤 따라오는 수고 | 스크립트 한 번 + 언리얼 빌드. 잊으면 **옛 core 로 조용히 돎**(해시 시험이 historia_run 도 같은 옛 빌드라 못 잡음) | 언리얼 빌드만. 새 .cpp 는 CMakeLists 목록을 읽어 저절로 들어감. 새 바깥 라이브러리(예: 연속이동의 Recast)·파일별 컴파일 옵션이 생기면 `HistoriaCore.Build.cs` 를 고쳐야 함 |
 | 깨지는 곳 | headless 가 CMake 로 빌드되면 거의 안 깨짐 | 언리얼 매크로·경고·묶음 빌드와 부딪히는 새 코드가 생기면 언리얼 쪽에서만 깨짐(=일찍 알게 됨) |
 
-- ⓐ 는 72258da 에서 없앰 (`ThirdParty/historia_core/lib` · Build.cs prebuilt 분기 · link_mode 는 "source" 만).
+- ⓐ 는 7127d77 에서 없앰 (`ThirdParty/historia_core/lib` · Build.cs prebuilt 분기 · link_mode 는 "source" 만).
 
 덧붙여 본 것:
 - 두 길 모두 **headless 메인 폴더가 다른 세션 작업 중**이면 그 순간의 소스·`out/`(gamedata_core.json 을 지우고 다시 씀)을 읽는다 — 시험 한 번이 그 사이에 걸려 '파일 못 엶'으로 실패했다(다시 돌리니 통과).
