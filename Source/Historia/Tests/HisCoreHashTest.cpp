@@ -1,4 +1,4 @@
-﻿// His.CoreHash (TASK_거시연결 U1) — 언리얼 안에서 돈 core 의 해시 = historia_run 해시 (같은 컴퓨터·같은 gamedata·같은 core 빌드).
+// His.CoreHash (TASK_거시연결 U1) — 언리얼 안에서 돈 core 의 해시 = historia_run 해시 (같은 컴퓨터·같은 gamedata·같은 core 빌드).
 // 시드·햇수·historia_run 자리는 Config/HisCore.json. 창 없이: UnrealEditor-Cmd Historia.uproject -nullrhi -ExecCmds="Automation RunTests His.CoreHash;Quit"
 #include "Misc/AutomationTest.h"
 

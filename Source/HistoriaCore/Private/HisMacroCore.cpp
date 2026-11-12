@@ -1,4 +1,4 @@
-﻿#include "HisMacroCore.h"
+#include "HisMacroCore.h"
 
 #include "HisCoreInclude.h"
 

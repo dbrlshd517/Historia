@@ -1,4 +1,4 @@
-﻿// 거시 서브시스템 (TASK_거시연결 U1) — 게임 하나에 거시 core 하나. 경로는 Config/HisCore.json.
+// 거시 서브시스템 (TASK_거시연결 U1) — 게임 하나에 거시 core 하나. 경로는 Config/HisCore.json.
 // U1 은 화면·스레드 없음: 불러오기 → 날 진행 → 해시. U2 에서 core 를 제 스레드(Runner)로 옮기고 게임 스레드는 스냅샷만 본다.
 #pragma once
 

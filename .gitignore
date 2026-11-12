@@ -21,3 +21,7 @@ ThirdParty/historia_core/lib/
 
 # 거시 core ⓑ 빌드 때 만드는 한 줄 #include 파일 (HistoriaCore.Build.cs)
 Source/HistoriaCore/Private/Gen/
+
+# 개인 편집기 설정 — UBT -projectfiles -vscode 가 만듦(이 PC 절대 경로)
+.vscode/
+*.code-workspace

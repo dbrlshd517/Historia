@@ -1,4 +1,4 @@
-﻿#include "Macro/HisCoreConfig.h"
+#include "Macro/HisCoreConfig.h"
 
 #include "Dom/JsonObject.h"
 #include "HAL/PlatformMisc.h"

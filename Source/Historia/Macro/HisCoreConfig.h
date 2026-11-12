@@ -1,4 +1,4 @@
-﻿// Config/HisCore.json — 거시 core 자리 (headless 짝 폴더) · 지도·데이터 경로 · 확인 시드 (TASK_거시연결 U1). 경로를 코드에 박지 않는다.
+// Config/HisCore.json — 거시 core 자리 (headless 짝 폴더) · 지도·데이터 경로 · 확인 시드 (TASK_거시연결 U1). 경로를 코드에 박지 않는다.
 #pragma once
 
 #include "CoreMinimal.h"

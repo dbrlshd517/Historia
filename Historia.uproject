@@ -17,6 +17,10 @@
 	],
 	"Plugins": [
 		{
+			"Name": "AndroidFileServer",
+			"Enabled": false
+		},
+		{
 			"Name": "Fab",
 			"Enabled": false
 		},
