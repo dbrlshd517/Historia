@@ -6,7 +6,7 @@
 **작업 전에 먼저 `git pull`(이 저장소와 historia-headless) — 그다음 `Docs/STATUS.md` 와 지금 TASK(`Docs/TASK_*.md`)를 읽는다. TASK 가 사람의 지시다.** 보고는 한국어로.
 
 ## 규칙
-1. **거시 규칙을 여기서 다시 짜지 않는다.** 계산은 전부 historia-headless core(`playheadless/core.hpp` Sim 입구). core 소스를 이 저장소에 복사하지 않는다 — 원본은 headless 하나. core 에 필요한 것(조회·스냅샷 필드·명령 표)이 없으면 headless 쪽에 더한다(그 저장소 규칙대로).
+1. **거시 규칙을 여기서 다시 짜지 않는다.** 계산은 전부 historia-headless core(`playheadless/core.hpp` Sim 입구). core 소스를 이 저장소에 복사하지 않는다 — 원본은 headless 하나. core 에 필요한 것(조회·스냅샷 필드·명령 표)이 없으면 headless 세션에 부탁한다(아래 '제 폴더 밖은 고치지 않는다').
 2. **코드는 전부 C++ 텍스트** `Source/Historia/`. 화면도 C++(Slate) — 블루프린트에 로직을 두지 않는다. `Content/` 에는 에셋만.
 3. **데이터·계수 하드코딩 금지.** 설계 데이터는 headless `Startsetting/out/gamedata_core.json`(엑셀이 원본), 화면 설정은 `Config/*.json`. ID·이름·목록 크기를 코드에 박지 않는다.
 4. **core 는 제 스레드, 화면은 스냅샷만.** 게임 스레드에서 Sim 을 직접 만지지 않는다 — 명령은 큐, 그림은 버전 번호 스냅샷.
@@ -27,7 +27,7 @@
   - '안 고쳐진 것'·STATUS '판단 필요'에는 위 '사람 판단'·'멈춤'에 걸린 것만 적는다. 고칠 수 있는데 적기만 한 오류, Claude 가 정할 수 있는 것을 묻는 항목은 두지 않는다.
 - **브랜치·PR 안 만듦. main 에 바로.** 시작 = `git pull --rebase --autostash origin main`(훅이 저절로) · 단계 끝(빌드·시험 됨) = commit → `git pull --rebase origin main` → push. 새 worktree·복사 폴더를 스스로 만들지 않는다.
 - **작업 폴더 넷 (사람 11-12)**: 메인 `E:\Historia\Historia` + worktree `Historia_sub1`·`Historia_sub2`·`Historia_sub3`(분리된 HEAD — 시작 `git pull --rebase --autostash origin main`, 올릴 때 `git push origin HEAD:main`). Content(.uasset·.umap)는 이진이라 **한 번에 한 폴더에서만** 고친다 — 묻지 않고, 고치기 전에 다른 폴더에 안 올린 Content 변경이 없는지 git 으로 본다(있으면 그게 올라올 때까지 대기 명령으로 기다림). Binaries·Intermediate 는 폴더마다 따로(처음 빌드 김).
-- headless 를 고칠 때: 짝 폴더(메인 ↔ headless 메인 `Playheadless` · `_sub1` ↔ `Playheadless_sub1` · `_sub2` ↔ `Playheadless_sub2` · `_sub3` ↔ `Playheadless_sub3`)에서, **내가 고친 파일만** add → commit → `pull --rebase --autostash` → push. headless 의 시험(C3 고정 해시 등)이 그대로인지 확인.
+- **제 폴더 밖은 고치지 않는다 (사람 11-13 — 미시 세션이 headless `_sub2` 폴더에서 일해 그 폴더 세션과 부딪힘)**: 세션은 제 작업 폴더 안에서만 파일을 고치고 빌드·커밋한다. 다른 저장소·다른 폴더는 읽기만(pull 해서 읽는 것은 됨). 다른 저장소에 고칠 것이 생기면(엑셀 값·core 질의·공유 헤더 맞춤 등) 제 STATUS '다른 저장소 부탁'에 무엇을·왜를 적고 보고에 한 줄 — 사람이 그 저장소 세션에 넘긴다. 커밋엔 내가 고친 파일만 `git add`(`-a`·`--amend` 금지).
 - **시험·대본·스크린샷은 창 없이**(`-RenderOffscreen` · 숫자만은 `-nullrhi`). 찍은 것은 `Shots\<대본>\<때>\`(git 밖) — Claude 는 지우지 않음.
 - **콘솔 창도 띄우지 않는다 (사람 11-12 — 미시 저장소와 같게)**: 언리얼에 `-log` 를 넣지 않음(로그는 `Saved/Logs/*.log` · 출력이 필요하면 `-stdout -FullStdOutLogOutput`) · `start`·새 cmd 창 금지 · 파이썬 `subprocess` 는 윈도에서 `creationflags=0x08000000`(CREATE_NO_WINDOW). `hmb_run_lock.py` 는 언리얼 `-log` 를 저절로 빼고 콘솔 없이 띄움(사람이 직접 볼 때만 `HMB_RUN_SHOW=1`). 사람이 직접 여는 에디터·게임만 예외.
 - **무거운 판은 메모리 보고 띄운다 (사람 11-12 — 세션 여럿이 아무 때나 띄워 컴퓨터가 99 % 로 멈춤 · 너무 막지도 말 것 — 90 % 대가 이상)**: 언리얼(에디터·게임·자동 시험·스크린샷 판)·headless 시험처럼 무거운 실행은 `python "%LOCALAPPDATA%\Hmb\hmb_run_lock.py" run --name "<폴더> <일>" --need <GB> -- <명령>` 으로 — (지금 쓰는 메모리 + 이 판 GB + 막 띄운 판 몫) ÷ 전체 ≤ 90 % 일 때만 띄우고 아니면 줄 서서 기다림(미시·headless 세션과 같은 컴퓨터 자리) · `--need` 어림: 언리얼 그림 판 8 · 그림 없는 판 4 · headless 전체 ctest 16. 그 파일이 없으면 미시 `Historiamicrobattle_sub*\Tools\Python\hmb_run_lock.py` 를 한 번 돌리면 생김. 빌드는 UBT 가 이미 줄 세움. 다 쓴 판은 끔 · 남이 띄운 판은 안 끔.
