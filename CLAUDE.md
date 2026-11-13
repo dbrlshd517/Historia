@@ -16,6 +16,11 @@
 
 ## 작업 방식
 - **보고 첫 줄** `[<작업 폴더 이름> · <지금 TASK·단계>]`.
+- **묻지 않고 넘어간다 — 사람 판단은 좁게 (사람 11-13)**: 혼자 풀 수 있는 것은 묻지도 보고하지도 않는다. 빌드·시험·대본에서 오류·실패가 나오면 원인을 찾아 고치고 이어진 시험만 다시 돌려 통과할 때까지 되풀이 · 단계가 끝나면 commit → push 하고 **다음 단계로 바로** 넘어간다 · 사람에게 하는 보고는 TASK 가 끝날 때(또는 아래 '멈춤') 한 번 — 보고 양식(문제·원인·고침·확인·안 고쳐진 것)은 그대로.
+  - **사람 판단 = 이것만**: 게임 규칙·밸런스(플레이어가 느끼는 수치·동작 · 거시와 같이 쓰는 값) · TASK 와 다른 방향으로 가야 할 때 · 되돌리기 어려운 것(지우기·큰 구조 바꿈·다른 세션 영역 건드림) · 사람 손이 필요한 것(에디터 닫기·화면 직접 확인).
+  - **판단이 아님 — Claude 가 정하고 보고에 한 줄만**: 고치는 방법 고르기 · 내부 조정값(조향·길찾기·대형 같은 알고리즘 계수 — 시험·재기로 골라 정함) · 잴 판 수·씨앗 · 고를 시험·스크린샷 · 라이브러리 고르기(허용 라이선스 안) · 단계 순서. 이런 것을 'ⓐⓑⓒ 중 고르세요'로 묻지 않는다.
+  - **멈춤**: 같은 오류를 원인을 바꿔 3 번 고쳐도 안 됨 · 예외가 여럿 붙기 시작함 · 이 문서가 먼저 묻게 한 것(오래 걸리는 판 등) — 이때만 시도한 것과 함께 보고.
+  - '안 고쳐진 것'·STATUS '판단 필요'에는 위 '사람 판단'·'멈춤'에 걸린 것만 적는다. 고칠 수 있는데 적기만 한 오류, Claude 가 정할 수 있는 것을 묻는 항목은 두지 않는다.
 - **브랜치·PR 안 만듦. main 에 바로.** 시작 = `git pull --rebase --autostash origin main`(훅이 저절로) · 단계 끝(빌드·시험 됨) = commit → `git pull --rebase origin main` → push. 새 worktree·복사 폴더를 스스로 만들지 않는다.
 - **작업 폴더 넷 (사람 11-12)**: 메인 `E:\Historia\Historia` + worktree `Historia_sub1`·`Historia_sub2`·`Historia_sub3`(분리된 HEAD — 시작 `git pull --rebase --autostash origin main`, 올릴 때 `git push origin HEAD:main`). Content(.uasset·.umap)는 이진이라 **한 번에 한 폴더에서만** 고친다 — 고치기 전에 사람에게 어느 폴더인지 확인. Binaries·Intermediate 는 폴더마다 따로(처음 빌드 김).
 - headless 를 고칠 때: 짝 폴더(메인 ↔ headless 메인 `Playheadless` · `_sub1` ↔ `Playheadless_sub1` · `_sub2` ↔ `Playheadless_sub2` · `_sub3` ↔ `Playheadless_sub3`)에서, **내가 고친 파일만** add → commit → `pull --rebase --autostash` → push. headless 의 시험(C3 고정 해시 등)이 그대로인지 확인.
