@@ -9,7 +9,14 @@ set "UE=%~1"
 if "%UE%"=="" set "UE=%UE_ROOT%"
 if "%UE%"=="" set "UE=E:\Epic\UE_5.8"
 set "LOG=%PROJ%\Saved\Logs\his_corehash.log"
-"%UE%\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "%PROJ%\Historia.uproject" -nullrhi -unattended -nosplash -nop4 -ExecCmds="Automation RunTests His.CoreHash;Quit" -log -abslog="%LOG%" >nul 2>&1
+rem 무거운 판은 메모리 보고 띄움(CLAUDE.md · 사람 11-12): %LOCALAPPDATA%\Hmb\hmb_run_lock.py 로 줄 섬 — 그림 없는 판 4 GB. 콘솔 창 없이(-log 안 씀 · 로그는 -abslog 파일).
+set "LOCK=%LOCALAPPDATA%\Hmb\hmb_run_lock.py"
+if exist "%LOCK%" (
+  py "%LOCK%" run --name "Historia his_corehash" --need 4 -- "%UE%\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "%PROJ%\Historia.uproject" -nullrhi -unattended -nosplash -nop4 -ExecCmds="Automation RunTests His.CoreHash;Quit" -abslog="%LOG%" >nul 2>&1
+) else (
+  echo [his_core_hash] 주의: %LOCK% 없음 — 줄 안 서고 바로 띄움 ^(미시 Tools\Python\hmb_run_lock.py 를 한 번 돌리면 생김^)
+  "%UE%\Engine\Binaries\Win64\UnrealEditor-Cmd.exe" "%PROJ%\Historia.uproject" -nullrhi -unattended -nosplash -nop4 -ExecCmds="Automation RunTests His.CoreHash;Quit" -abslog="%LOG%" >nul 2>&1
+)
 findstr /c:"Result={Success} Name={CoreHash}" "%LOG%" >nul
 if errorlevel 1 (
   echo [his_core_hash] 실패 — %LOG%
