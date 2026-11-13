@@ -13,6 +13,8 @@
 6. **미시는 바깥 프로세스로 부른다.** historia_app 과 같은 길(`micro_launch.json` 같은 형식 — 미시 실행 파일·프로젝트 경로는 설정) · 같은 LinkHub(아래 U5 에서 core 쪽으로 옮겨 둘이 같이 씀). Historiamicrobattle 은 지금처럼 혼자서도(거시 없이) 시험할 수 있게 그대로 — 이 TASK 가 미시 저장소를 고치지 않는다(필요하면 STATUS '판단 필요').
 7. **결정성은 core 몫** — 언리얼 안에서 돈 core 의 해시 = `historia_run` 해시(같은 컴퓨터·같은 gamedata).
 
+- **거시 길찾기 = core 안 Recast (사람 11-13)**: headless `TASK_거시_내비메시` 가 core 에 Recast/Detour 를 넣음 — Historia 는 언리얼 내장 내비로 거시 길을 찾지 않고 core 가 준 길(점 목록)을 그리기만. HistoriaCore 모듈이 Recast 소스도 같이 컴파일(경로·설정 = headless `docs/UNREAL_LINK.md`) · his_check 해시 = historia_run 그대로.
+
 ## 1. 단계 (단계마다 빌드 → 고른 시험 → 창 없이 스크린샷 → 커밋·푸시 → STATUS)
 
 **U0 — 링크 길 고르기**: 둘을 실제로 해 보고 표로 비교 → STATUS '판단 필요'에 추천과 함께. 여기서 멈추고 보고.
