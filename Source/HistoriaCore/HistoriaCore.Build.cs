@@ -42,6 +42,8 @@ public class HistoriaCore : ModuleRules
 		bUseRTTI = false;
 		bUseUnity = false;
 		PCHUsage = PCHUsageMode.NoPCHs;
+		// 결정성: 게임 대상 기본은 /fp:fast(에디터만 precise) → 해시가 historia_run 과 달라짐(11-13 잼). core 는 어느 대상이든 precise
+		FPSemantics = FPSemanticsMode.Precise;
 		bDisableStaticAnalysis = true;
 		CppCompileWarningSettings.ShadowVariableWarningLevel = WarningLevel.Off;
 		CppCompileWarningSettings.UndefinedIdentifierWarningLevel = WarningLevel.Off;

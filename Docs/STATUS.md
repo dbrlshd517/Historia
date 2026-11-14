@@ -52,6 +52,11 @@
 - 두 길 모두 **headless 메인 폴더가 다른 세션 작업 중**이면 그 순간의 소스·`out/`(gamedata_core.json 을 지우고 다시 씀)을 읽는다 — 시험 한 번이 그 사이에 걸려 '파일 못 엶'으로 실패했다(다시 돌리니 통과).
 - 링크 길을 바꾸면 UBT 가 두 번 돌아야 한다(처음 한 번은 Gen 폴더를 규칙 실행 전에 읽어 실패 · 두 번째 통과).
 - 언리얼 안 틱 = historia_run 과 같은 빠르기(10 년: 14.6 s vs 14.7 s — 같은 core 빌드). 11-13 다시 잼(다른 판 없을 때 His.CoreHash 3 번 중간값): 틱 13.9 s vs historia_run 13.0 s = +7 % (10 % 안 · 불러오기 더하면 14.7 s = +13 % · 판마다 ±15 % 흔들림). 11-13 처음 본 17.6 s 는 다른 세션 판과 겹친 듯(그때 다른 판이 돌았는지는 확인 안 함).
+  - **11-13~14 틱만끼리 다시 잼 (sub1 · 사람 11-13)**: historia_run `runs.csv` seconds 가 원래 틱만(불러오기 뒤 t0) — 위 13.0 s 는 시험이 프로세스 전체를 잰 값. 다른 세션 빌드가 거의 늘 돌아 깨끗한 판이 없어 번갈아(A B A B…) 돌려 가장 빠른 판끼리 견줌. 해시는 모든 판 80d4d1f3….
+    - 에디터 틱 13.4 s(22 판 중 가장 빠름 · 중간 14.35) vs historia_run 11.14 s(18 판 · 중간 11.94) = **+20 %**.
+    - ① `-ansimalloc`(언리얼 Binned3 대신 CRT): 가장 빠름 15.4 s — 그냥 에디터 14.0 · historia_run 13.0 보다 오히려 느림 → **할당기 종류(Binned3)는 원인 아님** (operator new 가 FMemory 를 거치는 층은 둘 다 남음).
+    - ② 게임 빌드(Development · 쿡·스테이징 `Saved/StagedBuilds`): **해시가 달랐음**(3e98945d…) — 게임 대상 기본이 `/fp:fast`(에디터만 precise, UBT VCToolChain). `HistoriaCore.Build.cs` 에 `FPSemantics = Precise` → 게임도 80d4d1f3… (5/5). 고친 뒤 게임 17.6 s vs 에디터 18.1 s vs historia_run 13.2 s(가장 빠름 — 이 판은 부하가 커서 다 느림) → **에디터·게임 차이 없음 · 둘 다 historia_run 보다 ≈ 20~35 % 느림**.
+    - ③ 원인이 할당기가 아니라 고치는 길(core 할당 줄이기 · 모듈만 CRT) 은 안 함. 남은 후보(안 잼): 예외 켜짐(`/EHsc` vs `/EHs-c-` · `_HAS_EXCEPTIONS`) · operator new → FMemory 층 · 언리얼 프로세스의 다른 스레드·우선순위.
 
 ## 판단 필요
 - 거시 전투 창: PIP / 별도 창 (U4 때).
